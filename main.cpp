@@ -2,7 +2,7 @@
 #include <queue>
 using namespace std;
 
-int PID = 0; // Global variable to assign process id
+int PID = 1; // Global variable to assign process id
 class Process
 {
 private:
@@ -16,11 +16,21 @@ private:
     int turn_around_time = 0;       // Time taken for process to complete
     int waiting_time = 0;           // Time for which process waits
     int response_time = 0;          // Time taken for  cout.width(3)    cout.width(3)   
+    int remaining_time = 0;         // Time left for process to complete
+    int start_time = 0;             // Time at which process starts
+    int end_time = 0;               // Time at which process ends
+    int policy = 0;                 // 0 for FCFS, 1 for SJF, 2 for Priority, 3 for Round Robin
+public:
+    // make a constructor to initialize the process
+    Process()
+    {
+        if(pid == -1){
+            pid = PID++;
         }
     }
     Process(int burst_time, int priority, int arrival_time, int policy, int time_slice)
     {
-        if(PID == -1){
+        if(pid == -1){
             pid = PID++;
         }
         this->time_slice = time_slice;
@@ -183,13 +193,43 @@ private:
 };
 int main()
 {
-    int no_of_processes = 0;
-    int burst_time = 0;
-    int priority = 0;
-    int arrival_time = 0;
-    int policy = 0;
-    int time_slice = 0;
-    cout <<"    Enter number of processes: ";
-    cin >> no_of_processes;
+    // create and print processes
+    vector<Process> processes;
+    int n;
+    cout << "Enter number of processes: ";
+    cin >> n;
+    for (int i = 0; i < n; i++)
+    {
+        int burst_time, priority, arrival_time, policy, time_slice;
+        cout << "Enter burst time for process " << i + 1 << ": ";
+        cin >> burst_time;
+        cout << "Enter priority for process " << i + 1 << ": ";
+        cin >> priority;
+        cout << "Enter arrival time for process " << i + 1 << ": ";
+        cin >> arrival_time;
+        cout << "Enter policy for process " << i + 1 << ": ";
+        cin >> policy;
+        if (policy == 3)
+        {
+            cout << "Enter time slice for process " << i + 1 << ": ";
+            cin >> time_slice;
+        }
+        processes.push_back(Process(burst_time, priority, arrival_time, policy, time_slice));
+    }
+
+    // sort processes according to arrival time
+    sort(processes.begin(), processes.end(), [](Process a, Process b) {
+        return a.getArrivalTime() < b.getArrivalTime();
+    });
+
+    // print processes
+    cout << "\nProcesses before scheduling: \n";
+    for (int i = 0; i < n; i++)
+    {
+        processes[i].printProcess();
+    }
+
+
+
     return 0;
 }
