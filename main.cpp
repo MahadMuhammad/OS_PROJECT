@@ -1,6 +1,10 @@
 #include <iostream>
+#include<semaphore.h>
+#include<unistd.h>
+#include<pthread.h>
 #include <deque>
 #include <vector>
+#include<algorithm>
 using namespace std;
 
 int PID = 1; // Global variable to assign process id
@@ -206,14 +210,12 @@ void running(int time)
         ;
 }
 /// Prototype of functions
-void multilevel_queue_scheduling();
+
 
 int main()
 {
     cout << "\n\t Welcome to CPU Scheduling Simulator \n\n";
     multilevel_queue_scheduling();
-
-
 
     return 0;
 }
