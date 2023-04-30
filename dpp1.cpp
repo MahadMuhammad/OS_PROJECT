@@ -11,21 +11,22 @@ void multilevel_queue_scheduling();
 sem_t fok[5];
 int main()
 {
-    //cout << "\n\t Welcome to CPU Scheduling Simulator \n\n";
-    //multilevel_queue_scheduling();
-pthread_t p[5];
-int n[5];
-for (int i=0;i<5;i++)
+    int n1;
+   cout<<"enter the number of processes for dining philosophers problem"<<endl;
+   cin>>n1;
+pthread_t p[n1];
+int n[n1];
+for (int i=1;i<=n1;i++)
 {
     sem_init(&fok[i],0,1);
 }
-for (int i=0;i<5;i++)
+for (int i=1;i<=n1;i++)
 {
     n[i]=i;
     pthread_create(&p[i],NULL,dpp,&n[i]);
-    sleep(1);
+    //sleep(1);
 }
-for (int i=0;i<5;i++)
+for (int i=1;i<=n1;i++)
 {
     pthread_join(p[i],NULL);
 }
@@ -44,7 +45,7 @@ void * dpp(void * n)
     sem_wait(&fok[(x+1)%5]);
    //cout<<"philosopher "<<x<<" has picked its right fork"<<endl;
    cout<<"philosopher "<<x<<" is now eating"<<endl;
-   sleep(2);
+   //sleep(2);
    sem_post(&fok[(x+1)%5]);
    //cout<<"philosopher "<<x<<" has left its right fork"<<endl;
     sem_post(&fok[x]);
