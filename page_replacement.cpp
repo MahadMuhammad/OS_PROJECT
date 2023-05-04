@@ -57,7 +57,7 @@ int main()
 
     string str1 = "";
     int frames = 3;
-    str1 = "2 3 2 1 5 2 4 5 3 2 5 2";
+    str1 = " 2 5 10 1 2 2 6 9 1 2 10 2 6 1 2 1 6 9 5 1";
 
     int len = 0;
     string str[100];
