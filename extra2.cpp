@@ -152,12 +152,10 @@ static void printHitsAndFaults(string reference_string, int frames)
             pf++;
         }
     }
-    int prob = (1.0 * pf) / l;
-cout << "The total number of page faults are " << pf << "\n";
-cout << "The page fault probability is " << prob << "\n";
-float k = (1.0 * pf / l) * 100;
-cout << "Percentage of page faults = " << k << "%" << endl;
 
+    // Delete the circular linked list
+
+    cout << "Total page faults were " << pf << "\n";
 }
  
 // Driver code
@@ -167,17 +165,17 @@ int main()
     int frames = 0;
  
     // Test 1:
-    string s = "2 3 2 1 5 2 4 5 3 2 3 5";
+    reference_string = "6 1 1 2 0 3 4 6 0 2 1 2 1 2 0 3 2 1 4 0";
     frames = 3;
      
     // Output is 9
-    printHitsAndFaults(s,frames);
+    printHitsAndFaults(reference_string,frames);
      
     // Test 2:
-    string s1 = "2 5 10 1 2 2 6 9 1 2 10 2 6 1 2 1 6 9 5 1";
+    reference_string = "2 5 10 1 2 2 6 9 1 2 10 2 6 1 2 1 6 9 5 1";
     frames = 4;
      
     // Output is 11
-    printHitsAndFaults(s1,frames);
+    printHitsAndFaults(reference_string,frames);
     return 0;
 }

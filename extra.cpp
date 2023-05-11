@@ -1,6 +1,11 @@
 
 #include <iostream>
 using namespace std;
+int hash_func(int p)
+{
+    int index=p%10;
+    return index;
+}
 
 #define MAXLINE 80 // The maximum length command
 #define MAXARGS 20 // The maximum number of arguments
@@ -26,7 +31,8 @@ public:
 class HashPageTable
 {
 public:
-    HashPageTableEntry *hashPageTableEntry[MAXARGS];//hash table
+    HashPageTableEntry *hashPageTableEntry[MAXARGS];
+  // HashPageTableEntry *hashPageTableEntry=new HashPageTableEntry[ MAXARGS] ;
 
     // Constructor
     HashPageTable()
@@ -38,8 +44,10 @@ public:
     }
 
     // Inserting a hash page table entry into the hash page table
-    void insertHashPageTableEntry(int pageNumber, int frameNumber) {
-        int hashIndex = pageNumber % MAXARGS;//applying hash function
+    void insertHashPageTableEntry(int pageNumber, int frameNumber)
+     {
+       // int hashIndex = pageNumber % MAXARGS;//applying hash function
+       int hashIndex=hash_func(pageNumber);
         HashPageTableEntry *newHashPageTableEntry = new HashPageTableEntry(pageNumber, frameNumber);
         if (hashPageTableEntry[hashIndex] == nullptr) {
             hashPageTableEntry[hashIndex] = newHashPageTableEntry;
@@ -92,5 +100,6 @@ int main(int argc, char *argv[]) {
     hashPageTable.insertHashPageTableEntry(2, 2);
     hashPageTable.insertHashPageTableEntry(15, 15);
     hashPageTable.insertHashPageTableEntry(4, 4);
-   // hashPageTable.insertHashPageTableEntry
+    hashPageTable.printHashPageTable();
+    //hashPageTable.insertHashPageTableEntry
 }
