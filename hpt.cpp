@@ -7,10 +7,17 @@ int hash_func(int p)
 }
 class node
 {
-public:
+  public:
     int pageNumber;
     int mapped_frame;
     node *next;
+    
+    node()
+    {
+        pageNumber =0;
+        mapped_frame = 0;
+        this->next = nullptr;
+    }
 
     node(int pn, int fn)
      {
@@ -32,15 +39,16 @@ class hpt
     }
  void insert(int pn,int mf)
  {
-    int hashIndex=hash_func(pn);
-    node*newnode=new node(pn,mf);
+    int Index=hash_func(pn);
+
      node*n = new node(pn, mf);
-        if (new_node[hashIndex] == nullptr) 
+        if (new_node[Index] == nullptr) 
         {
-            new_node[hashIndex] = n;
-        } else 
+            new_node[Index] = n;
+        }
+         else 
         {
-            node *current = new_node[hashIndex];
+            node *current = new_node[Index];
             while (current->next != nullptr)
             {
                 current = current->next;
@@ -50,7 +58,7 @@ class hpt
  }
  bool search(int pageNumber,int &f) 
  {
-        int hashIndex=hash_func(pageNumber);
+       int hashIndex=hash_func(pageNumber);
        node *current = new_node[hashIndex];
         while (current != nullptr) 
         {
@@ -62,8 +70,21 @@ class hpt
             current = current->next;
         }
         return false;
+}
+ void print_hpt()
+{
+    cout << "the hpt is as follows:" << endl;
+    for (int i = 0; i < 10; i++)
+    {
+        if (new_node[i] != nullptr)
+        {
+            cout << "Page " << new_node[i]->pageNumber
+                      << " is mapped to frame " << new_node[i]->mapped_frame << endl;
+        }
     }
- 
+}
+
+     
 };
 class TLBNode
 {
@@ -106,28 +127,30 @@ private:
         
     }
 
-    bool TLB_search(int page,int&frame) 
+    bool TLB_search(int page,int&f) 
     {
         for (int i = 0; i < 5; i++)
         {
+            if(new_node[i]!=nullptr)
+         {
             if (new_node[i]->page_number == page) 
             {
-                frame = new_node[i]->frame_number;
+                f = new_node[i]->frame_number;
                 return true;
             }
+         }
         }
         return false;
     }
     void print_TLB()
 {
-    std::cout << "TLB contents:" << std::endl;
+    cout << "the tlb is as follows:" << endl;
     for (int i = 0; i < 5; i++)
     {
         if (new_node[i] != nullptr)
         {
-            std::cout << "Page " << new_node[i]->page_number 
-                      << " is mapped to frame " << new_node[i]->frame_number 
-                      << std::endl;
+            cout << "Page " << new_node[i]->page_number 
+                      << " is mapped to frame " << new_node[i]->frame_number << endl;
         }
     }
 }
@@ -135,20 +158,22 @@ private:
 };
 int main()
 {
-     hpt hashPageTable;
-    hashPageTable.insert(40, 20);
-    hashPageTable.insert(2, 2);
-    hashPageTable.insert(15, 15);
-    hashPageTable.insert(4, 4);
+     hpt h;
+    h.insert(7,6);
+    h.insert(32, 2);
+    h.insert(12,56);
+    h.insert(14, 4);
+   // h.print_hpt();
+    
 
     TLB t;
-    t.TLB_insert(40,20);
+    t.TLB_insert(7,6);
     t.TLB_insert(4,0);
     t.TLB_insert(3,4);
-    t.TLB_insert(15,15);
+    t.TLB_insert(14,4);
     t.TLB_insert(5,6);
  
-    //t.print_TLB();
+  t.print_TLB();
    int n;
    int x;
    int y;
@@ -158,7 +183,7 @@ int main()
 {
     cout<<"the page is found in TLB and is mapped to frame number: "<<x<<endl;
 }
-else if (hashPageTable.search(n,y)==true)
+else if (h.search(n,y)==true)
 {
    cout<<"the page is found in hashTable and is mapped to frame number: "<<y<< endl;
    cout<<"tlb has also been updated"<<endl;
