@@ -10,6 +10,7 @@ void*dpp(void*);
 void multilevel_queue_scheduling();
 sem_t fok[5];
 sem_t T;
+sem_t typing;
 
 int main()
 {
@@ -17,6 +18,7 @@ int main()
    cout<<"enter the number of processes for dining philosophers problem"<<endl;
    cin>>n1;
    sem_init(&T,0,n1-1);
+   sem_init(&typing,0,1);
 pthread_t p[n1];
 int n[n1];
 for (int i=1;i<=n1;i++)
@@ -40,11 +42,15 @@ void * dpp(void * n)
 {
     int x=*(int*)n;
     cout<<endl;
+    sem_wait(&typing);
     cout<<"philosopher "<<x<<" is thinking"<<endl;
+     sem_post(&typing);
     sem_wait(&T);
     sem_wait(&fok[x]);
     sem_wait(&fok[(x+1)%5]);
+    sem_wait(&typing);
    cout<<"philosopher "<<x<<" is now eating"<<endl;
+   sem_post(&typing);
    sem_post(&fok[(x+1)%5]);
     sem_post(&fok[x]);
     sem_post(&T);
