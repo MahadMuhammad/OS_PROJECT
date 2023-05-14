@@ -11,7 +11,7 @@ LDFLAGS = #-lncurses
 
 # Executable name
 
-main.out:	main.cpp
+extra.out:	extra.cpp
 	$(CC) $^ -o $@ $(LDFLAGS) $(CFLAGS) 
 
 clean:

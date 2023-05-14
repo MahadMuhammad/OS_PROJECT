@@ -143,6 +143,7 @@ int output;
     cin>>pn;
     output=pt.search(pn);
     cout<<"the page number "<<pn<<"is mapped to frame number "<<output<<endl;
+    cout<<endl;
     return 0;
 
 }
