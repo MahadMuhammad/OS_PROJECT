@@ -159,19 +159,25 @@ private:
 int main()
 {
      hpt h;
-    h.insert(7,6);
-    h.insert(32, 2);
-    h.insert(12,56);
-    h.insert(14, 4);
+    h.insert(1,6);
+    h.insert(2, 2);
+    h.insert(3,56);
+    h.insert(4, 6);
+    h.insert(5, 70);
+    h.insert(6, 4);
+    h.insert(7, 2);
+    h.insert(8, 1);
+    h.insert(9, 55);
+    h.insert(10, 0);
    // h.print_hpt();
     
 
     TLB t;
-    t.TLB_insert(7,6);
-    t.TLB_insert(4,0);
-    t.TLB_insert(3,4);
-    t.TLB_insert(14,4);
-    t.TLB_insert(5,6);
+    t.TLB_insert(7,2);
+    t.TLB_insert(4,6);
+    t.TLB_insert(3,56);
+    t.TLB_insert(1,6);
+    t.TLB_insert(5,70);
  
   t.print_TLB();
    int n;
@@ -192,13 +198,8 @@ else if (h.search(n,y)==true)
 
 
 }
-else{
-int z;
-cout<<"the page number neither exists in tlb nor hash table.so we insert it in the hash table"<<endl;
-cout<<"enter the frame number to insert"<<endl;
-
-cin>>z;
-h.insert(n,z);}
+else
+cout<<"please enter the within 1 to 10 "<<endl;
 
 
 
