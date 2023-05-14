@@ -1,105 +1,116 @@
-
-#include <iostream>
+#include<iostream>
+#include<cstring>
+#include<sstream>
 using namespace std;
-int hash_func(int p)
+
+struct Node {
+    int value;
+    int use_bit;
+    Node* next;
+};
+ Node* replace(int x, Node* head, int frames, Node* pointer) 
 {
-    int index=p%10;
-    return index;
+    Node* current = pointer;
+    while (true)
+     {
+       
+        if (current->use_bit == 0)
+         {
+           
+            current->value = x;
+            current->use_bit = 1;
+            return current->next;
+        }
+        current->use_bit = 0;
+        current = current->next;
+    }
 }
 
-#define MAXLINE 80 // The maximum length command
-#define MAXARGS 20 // The maximum number of arguments
+ void page_fault(int *a, int frames, int n) {
+    Node* head = nullptr;
+    Node* tail = nullptr;
+    Node* pointer = nullptr;
+    int i,x, pf;
 
-// Hash page table entry class
-class HashPageTableEntry
-{
-public:
-    int pageNumber;
-    int frameNumber;
-    HashPageTableEntry *next;
+    for (i = 0; i < frames; i++) {
+        Node* newNode = new Node;
+        newNode->value = -1;
+        newNode->use_bit = 1;
+        newNode->next = nullptr;
 
-    // Constructor
-    HashPageTableEntry(int pageNumber, int frameNumber)
-     {
-        this->pageNumber = pageNumber;
-        this->frameNumber = frameNumber;
-        this->next = nullptr;
-    }
-};
-
-// Hash page table class
-class HashPageTable
-{
-public:
-    HashPageTableEntry *hashPageTableEntry[MAXARGS];
-  // HashPageTableEntry *hashPageTableEntry=new HashPageTableEntry[ MAXARGS] ;
-
-    // Constructor
-    HashPageTable()
-    {
-        for (int i = 0; i < MAXARGS; i++)
-        {
-            hashPageTableEntry[i] = nullptr;
-        }
-    }
-
-    // Inserting a hash page table entry into the hash page table
-    void insertHashPageTableEntry(int pageNumber, int frameNumber)
-     {
-       // int hashIndex = pageNumber % MAXARGS;//applying hash function
-       int hashIndex=hash_func(pageNumber);
-        HashPageTableEntry *newHashPageTableEntry = new HashPageTableEntry(pageNumber, frameNumber);
-        if (hashPageTableEntry[hashIndex] == nullptr) {
-            hashPageTableEntry[hashIndex] = newHashPageTableEntry;
+        if (head == nullptr) {
+            head = newNode;
+            tail = newNode;
         } else {
-            HashPageTableEntry *currentHashPageTableEntry = hashPageTableEntry[hashIndex];
-            while (currentHashPageTableEntry->next != nullptr) {
-                currentHashPageTableEntry = currentHashPageTableEntry->next;
-            }
-            currentHashPageTableEntry->next = newHashPageTableEntry;
+            tail->next = newNode;
+            tail = newNode;
         }
     }
-    
+    tail->next = head;
 
-    // Searching for a hash page table entry in the hash page table
-    int searchHashPageTableEntry(int pageNumber) {
-        int hashIndex = pageNumber % MAXARGS;
-        HashPageTableEntry *currentHashPageTableEntry = hashPageTableEntry[hashIndex];
-        while (currentHashPageTableEntry != nullptr) {
-            if (currentHashPageTableEntry->pageNumber == pageNumber) {
-                return currentHashPageTableEntry->frameNumber;
-            }
-            currentHashPageTableEntry = currentHashPageTableEntry->next;
-        }
-        return -1;
-    }
+    int use_bit[frames];
+    pointer = head;
 
-    // Printing the hash page table
-    void printHashPageTable() {
-        for (int i = 0; i < MAXARGS; i++) {
-            if (hashPageTableEntry[i] != nullptr) {
-                HashPageTableEntry *currentHashPageTableEntry = hashPageTableEntry[i];
-                while (currentHashPageTableEntry != nullptr) {
-                    printf("Page number: %d, Frame number: %d -> ", currentHashPageTableEntry->pageNumber, currentHashPageTableEntry->frameNumber);
-                    currentHashPageTableEntry = currentHashPageTableEntry->next;
+    pf = 0;
+    for (i = 0; i < n; i++)
+     {
+        x = a[i];
+        bool flag = false;
+        Node* current = head;
+        for (int i = 0; i < frames; i++) {
+            if (current->value == x)
+             {
+                cout << "hit on " << x << endl;
+                if (current->use_bit == 0) 
+                {
+                    current->use_bit = 1;
                 }
-                printf("NULL");
-                printf(" (Hash index: %d)", i);
-                printf("\n");
+                 current->use_bit = 1;
+                flag = true;
+                break;
+            }
+            current = current->next;
+        }
+
+        if (!flag)
+         {
+            bool flag1 = false;
+            Node* current = head;
+            for (int i = 0; i < frames; i++)
+             {
+                if (current->value == -1)
+                {
+                    pf++;
+                    cout << "fault1 on " << x << endl;
+                    current->value = x;
+                    current->use_bit = 1;
+                    flag1 = true;
+                    break;
+                }
+                current = current->next;
+            }
+            if (!flag1)
+             {
+                cout << "fault on " << x << endl;
+                pointer = replace(x, head, frames, pointer);
+                pf++;
             }
         }
     }
-};
+    float prob = (1.0 *(float) pf) / n;
+    cout << "The total number of page faults are " << pf << "\n";
+    cout << "The page fault probability is " << prob << "\n";
+    float k = (1.0 *(float)pf /(float) n) * 100;
+ cout << "Percentage of page faults = " << k << "%" << endl;
 
-int main(int argc, char *argv[]) {
-    // Creating a hash page table
-    HashPageTable hashPageTable;
+}
+ 
 
-    // Insert hash page table entries into the hash page table
-    hashPageTable.insertHashPageTableEntry(40, 20);
-    hashPageTable.insertHashPageTableEntry(2, 2);
-    hashPageTable.insertHashPageTableEntry(15, 15);
-    hashPageTable.insertHashPageTableEntry(4, 4);
-    hashPageTable.printHashPageTable();
-    //hashPageTable.insertHashPageTableEntry
+int main()
+{   
+    int frames = 3;
+    int a1[18]={5,4,3,4,5,4,2,4,3,4,1,2,3,2,5,4,6,4};
+    page_fault(a1,frames,18);
+     
+    return 0;
 }

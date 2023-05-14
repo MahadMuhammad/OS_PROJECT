@@ -3,181 +3,117 @@
 #include<sstream>
 using namespace std;
 
-
 struct Node
- {
+{
     int value;
-    bool second_chance;
+    int use_bit;
     Node* next;
 };
-
-// If page found, updates the second chance bit to true
-static bool findAndUpdate(int x, Node* head, int frames)
-{
-    Node* current = head;
-    for(int i = 0; i < frames; i++)
-    {
-        if(current->value == x)
-        {
-            // Mark that the page deserves a second chance
-            current->second_chance = true;
-
-            // Return 'true', that is there was a hit
-            // and so there's no need to replace any page
-            return true;
-        }
-        current = current->next;
-    }
-
-    // Return 'false' so that a page for replacement is selected
-    // as the requested page doesn't exist in memory
-    return false;
-}
-
-// Updates the page in memory and returns the pointer
-static Node* replaceAndUpdate(int x, Node* head, int frames, Node* pointer)
+ Node* replace(int x, Node* head, int frames, Node* pointer) 
 {
     Node* current = pointer;
-    while(true)
-    {
-        // We found the page to replace
-        if(!current->second_chance)
-        {
-            // Replace with new page
+    while (true)
+     {
+       
+        if (current->use_bit == 0)
+         {
+           
             current->value = x;
-
-            // Return updated pointer
+            current->use_bit = 1;
             return current->next;
         }
-
-        // Mark it 'false' as it got one chance
-        // and will be replaced next time unless accessed again
-        current->second_chance = false;
-
-        // Pointer is updated in round robin manner
+        current->use_bit = 0;
         current = current->next;
     }
 }
 
-static void printHitsAndFaults(string reference_string, int frames)
+ void page_fault(int *a, int frames, int n)
 {
     Node* head = nullptr;
     Node* tail = nullptr;
     Node* pointer = nullptr;
-    int i, l=0, x, pf;
+    int i,x, pf;
 
-    // Create a circular linked list to hold page numbers
-    for(i = 0; i < frames; i++)
-    {
+    for (i = 0; i < frames; i++) {
         Node* newNode = new Node;
         newNode->value = -1;
-        newNode->second_chance = false;
+        newNode->use_bit = 1;
         newNode->next = nullptr;
 
-        if(head == nullptr)
-        {
+        if (head == nullptr) {
             head = newNode;
             tail = newNode;
-        }
-        else
-        {
+        } else {
             tail->next = newNode;
             tail = newNode;
         }
     }
     tail->next = head;
 
-    // No pages initially in frame
-
-    // Create second chance array.
-    // Can also be a byte array for optimizing memory
-    bool second_chance[frames];
-
-    // Split the string into tokens,
-    // that is page numbers, based on space
-
-    string str[100];
-    string word = "";
-    for (auto x : reference_string)
-    {
-        if (x == ' ')
-        {
-            str[l]=word;
-            word = "";
-            l++;
-        }
-        else
-        {
-            word = word + x;
-        }
-    }
-    str[l] = word;
-    l++;
-    // l=the length of array
-
-    // Initially, pointer points to the head of the linked list
+    int use_bit[frames];
     pointer = head;
 
-    // Number of page faults
     pf = 0;
-    for(i = 0; i < l; i++)
-    {
-        x = stoi(str[i]);
-    bool flag=false;
-    Node* current = head;
-    for(int i = 0; i < frames; i++)
-    {
-        if(current->value == x)
+    for (i = 0; i < n; i++)
+     {
+        x = a[i];
+        bool flag = false;
+        Node* current = head;
+        for (int i = 0; i < frames; i++)
         {
-            // Mark that the page deserves a second chance
-            current->second_chance = true;
-
-            // Return 'true', that is there was a hit
-            // and so there's no need to replace any page
-            flag=true;
-            break;
+            if (current->value == x)
+             {
+                cout << "hit on " << x << endl;
+                if (current->use_bit == 0) 
+                {
+                    current->use_bit = 1;
+                }
+                 current->use_bit = 1;
+                flag = true;
+                break;
+            }
+            current = current->next;
         }
-        current = current->next;
-    }
 
-    // Return 'false' so that a page for replacement is selected
-    // as the requested page doesn't exist in memory
-   
-        //if(!findAndUpdate(x,head,frames))
-        if(!flag)
-        {
-            // Selects and updates a victim page
-            pointer = replaceAndUpdate(x,head,frames,pointer);
-
-            pf++;
+        if (!flag)
+         {
+            bool flag1 = false;
+            Node* current = head;
+            for (int i = 0; i < frames; i++)
+             {
+                if (current->value == -1)
+                {
+                    pf++;
+                    cout << "fault on " << x << endl;
+                    current->value = x;
+                    current->use_bit = 1;
+                    flag1 = true;
+                    break;
+                }
+                current = current->next;
+            }
+            if (!flag1)
+             {
+                cout << "fault on " << x << endl;
+                pointer = replace(x, head, frames, pointer);
+                pf++;
+            }
         }
     }
-    int prob = (1.0 * pf) / l;
-cout << "The total number of page faults are " << pf << "\n";
-cout << "The page fault probability is " << prob << "\n";
-float k = (1.0 * pf / l) * 100;
-cout << "Percentage of page faults = " << k << "%" << endl;
+    float prob = (1.0 *(float) pf) / n;
+    cout << "The total number of page faults are " << pf << "\n";
+    cout << "The page fault probability is " << prob << "\n";
+    float k = (1.0 *(float)pf /(float) n) * 100;
+ cout << "Percentage of page faults = " << k << "%" << endl;
 
 }
  
-// Driver code
+
 int main()
-{
-    string reference_string = "";    
-    int frames = 0;
- 
-    // Test 1:
-    string s = "2 3 2 1 5 2 4 5 3 2 3 5";
-    frames = 3;
+{   
+    int frames = 3;
+    int a1[18]={5,4,3,4,5,4,2,4,3,4,1,2,3,2,5,4,6,4};
+    page_fault(a1,frames,18);
      
-    // Output is 9
-    printHitsAndFaults(s,frames);
-     
-    // Test 2:
-    string s1 = "2 5 10 1 2 2 6 9 1 2 10 2 6 1 2 1 6 9 5 1";
-    frames = 4;
-     
-    // Output is 11
-    printHitsAndFaults(s1,frames);
     return 0;
 }
