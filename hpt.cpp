@@ -192,8 +192,13 @@ else if (h.search(n,y)==true)
 
 
 }
-else
+else{
+int z;
 cout<<"the page number neither exists in tlb nor hash table.so we insert it in the hash table"<<endl;
+cout<<"enter the frame number to insert"<<endl;
+
+cin>>z;
+h.insert(n,z);}
 
 
 

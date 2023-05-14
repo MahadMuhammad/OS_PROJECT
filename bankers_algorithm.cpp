@@ -46,22 +46,22 @@ void print_need_matrice(int**need,int numProcesses,int numResources)
 bool safetyAlgorithm(int numProcesses, int numResources, int maximum[][10], int allocation[][10], int available[], int *safeSequence, int**need)
 {
     int work[10];
-    bool finish[10];
-    int count = 0;
+    bool is_finish[10];
+    int total = 0;
     for (int i = 0; i < numResources; i++)
     {
         work[i] = available[i];
     }
     for (int i = 0; i < numProcesses; i++)
     {
-        finish[i] = false;
+        is_finish[i] = false;
     }
-    while (count < numProcesses)
+    while (total < numProcesses)
     {
         bool found = false;
         for (int i = 0; i < numProcesses; i++)
         {
-            if (!finish[i])
+            if (!is_finish[i])
             {
                    bool check=true;
                     for (int j = 0; j < numResources; j++)
@@ -75,15 +75,15 @@ bool safetyAlgorithm(int numProcesses, int numResources, int maximum[][10], int 
                     
                 if(check==true)
                 {
-                    safeSequence[count] = i;
-                    count++;
+                    safeSequence[total] = i;
+                    total++;
                  
                     for (int j = 0; j < numResources; j++)
                     {
                         work[j] =work[j]+ allocation[i][j];
                     }
                     
-                    finish[i] = true;
+                    is_finish[i] = true;
                     
                     // Set found to true
                     found = true;
@@ -96,12 +96,11 @@ bool safetyAlgorithm(int numProcesses, int numResources, int maximum[][10], int 
             return false;
         }
     }
-   
-     //cout<<endl;
         cout<<"the system is in safe state"<<endl;
         printSafeSequence(numProcesses, numResources, safeSequence);
         return true;
 }
+
 int main()
 {
     int numProcesses;
@@ -150,10 +149,12 @@ int main()
          cout << "please enter how many resources are available in the system for instance : "<<i+1<<endl;
         cin >> available[i];
     }
-    
+    cout<<"Running The Safety Algorithm"<<endl;
     bool is_safe = safetyAlgorithm(numProcesses, numResources, maximum, allocation, available, safeSequence,need);
+   
     
-    // Get request
+    //resource_request_algorithm
+    cout<<"Running The Resource Request Algorithm"<<endl;
     cout << "Enter the process requesting resources: ";
     int process;
     cin >> process;

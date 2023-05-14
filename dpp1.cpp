@@ -9,11 +9,14 @@ using namespace std;
 void*dpp(void*);
 void multilevel_queue_scheduling();
 sem_t fok[5];
+sem_t T;
+
 int main()
 {
     int n1;
    cout<<"enter the number of processes for dining philosophers problem"<<endl;
    cin>>n1;
+   sem_init(&T,0,n1-1);
 pthread_t p[n1];
 int n[n1];
 for (int i=1;i<=n1;i++)
@@ -35,21 +38,16 @@ for (int i=1;i<=n1;i++)
 }
 void * dpp(void * n)
 {
-    //sleep(1);
     int x=*(int*)n;
     cout<<endl;
     cout<<"philosopher "<<x<<" is thinking"<<endl;
-    //cout<<"philosopher "<<x<<" wants to eat"<<endl;
+    sem_wait(&T);
     sem_wait(&fok[x]);
-    //cout<<"philosopher "<<x<<" has picked its left fork"<<endl;
     sem_wait(&fok[(x+1)%5]);
-   //cout<<"philosopher "<<x<<" has picked its right fork"<<endl;
    cout<<"philosopher "<<x<<" is now eating"<<endl;
-   //sleep(2);
    sem_post(&fok[(x+1)%5]);
-   //cout<<"philosopher "<<x<<" has left its right fork"<<endl;
     sem_post(&fok[x]);
-    //cout<<"philosopher "<<x<<" has left its left fork"<<endl;
+    sem_post(&T);
     pthread_exit(NULL);
    return 0;
 }
