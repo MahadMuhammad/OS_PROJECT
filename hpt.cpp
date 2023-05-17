@@ -71,18 +71,23 @@ class hpt
         }
         return false;
 }
- void print_hpt()
-{
-    cout << "the hpt is as follows:" << endl;
-    for (int i = 0; i < 10; i++)
+  void printHashPageTable()
     {
-        if (new_node[i] != nullptr)
+        for (int i = 0; i < 10; i++) 
         {
-            cout << "Page " << new_node[i]->pageNumber
-                      << " is mapped to frame " << new_node[i]->mapped_frame << endl;
+            if (new_node[i] != nullptr)
+             {
+                node *current = new_node[i];
+                while (current != nullptr) {
+                    printf("Page number: %d, mapped frame: %d -> ", current->pageNumber, current->mapped_frame);
+                    current = current->next;
+                }
+                printf("NULL");
+                printf(" (Hash index: %d)", i);
+                printf("\n");
+            }
         }
     }
-}
 
      
 };
@@ -168,8 +173,10 @@ int main()
     h.insert(7, 2);
     h.insert(8, 1);
     h.insert(9, 55);
-    h.insert(10, 0);
-   // h.print_hpt();
+    h.insert(12, 0);
+    h.insert(32, 99);
+    h.printHashPageTable();
+   
     
 
     TLB t;

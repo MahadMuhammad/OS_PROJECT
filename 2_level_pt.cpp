@@ -120,8 +120,10 @@ int fbits;
 int total_frames;
 int outer_size;
 int inner_size;
-int pn;
+int logical;
 int output;
+
+cout<<"calculating the frames of memory"<<endl;
     cout << "Enter the number of bits required for physical memory: "<<endl;
     cin >> pbits;
     cout << "Enter the number of bits required for frame size: "<<endl;
@@ -139,10 +141,18 @@ int output;
        pt.insert(i,total_frames);
     }
     pt.print();
-    cout<<"enter the page number that cpu wants"<<endl;
-    cin>>pn;
-    output=pt.search(pn);
-    cout<<"the page number "<<pn<<"is mapped to frame number "<<output<<endl;
+   // cout<<"enter the page number that cpu wants"<<endl;
+   int t=fbits*num;
+   cout<<"enter the logical address between 0 and "<<t<<endl;
+    cin>>logical;
+   int page_num=(logical/fbits);
+   int offset=(logical%fbits);
+    
+    //int offset=
+    output=pt.search(page_num);
+    cout<<"the page number "<<page_num<<" is mapped to frame number "<<output<<endl;
+    int physical_add=(output*fbits)+offset;
+    cout<<"the physical address is "<<physical_add<<endl;
     cout<<endl;
     return 0;
 
